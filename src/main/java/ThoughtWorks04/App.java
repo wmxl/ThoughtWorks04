@@ -1,6 +1,8 @@
 package ThoughtWorks04;
 
+import ThoughtWorks04.model.CellMat;
 import ThoughtWorks04.util.Utils;
+import javafx.scene.control.Cell;
 
 /**
  * Hello world!
@@ -8,12 +10,16 @@ import ThoughtWorks04.util.Utils;
  */
 public class App 
 {
-
-
-    static int[][] ns = new int[3][3];
-
-    public static boolean judge(int x, int y){
-        if(x >= 0 && x <= 2 && y >= 0 && y <= 2)
+    /**
+     * 判断坐标是否合法
+     * @param i
+     * @param j
+     * @param height
+     * @param width
+     * @return
+     */
+    public static boolean judge(int i, int j, int height, int width){
+        if(i >= 0 && i < height && j >= 0 && j < width)
             return true;
         return false;
     }
@@ -24,29 +30,35 @@ public class App
      * @param i 纵坐标
      * @return
      */
-    public static int countLifedNum(int[][] mat, int i, int j){
+    public static int countLifedNum(CellMat cm, int i, int j){
         int num=0;
-        if(judge(i-1, j-1))
+        int mat[][] = cm.getMat();
+        int height = cm.getHeight();
+        int width = cm.getWidth();
+
+        if(judge(i-1, j-1, height, width))
             num += mat[i-1][j-1];
-        if(judge(i-1, j))
+        if(judge(i-1, j, height, width))
             num += mat[i-1][j];
-        if(judge(i-1, j+1))
+        if(judge(i-1, j+1, height, width))
             num += mat[i-1][j+1];
 
-        if(judge(i, j-1))
+        if(judge(i, j-1, height, width))
             num += mat[i][j-1];
-        if(judge(i, j+1))
+        if(judge(i, j+1, height, width))
             num += mat[i][j+1];
 
-        if(judge(i+1, j-1))
+        if(judge(i+1, j-1, height, width))
             num += mat[i+1][j-1];
-        if(judge(i+1, j))
+        if(judge(i+1, j, height, width))
             num += mat[i+1][j];
-        if(judge(i+1, j+1))
+        if(judge(i+1, j+1, height, width))
             num += mat[i+1][j+1];
+
         return num;
     }
-    public static void draw(int[][] mat){
+    public static void draw(CellMat cm){
+        int[][] mat = cm.getMat();
         int cow = mat.length;
         int col = mat[0].length;
         for (int i = 0; i < cow; i++) {
@@ -62,9 +74,10 @@ public class App
 
     /**
      * 判断什么时候该停止
-     * @param mat
+     * @param cm
      */
-    public static boolean judgeStop(int[][] mat){
+    public static boolean judgeStop(CellMat cm){
+        int[][] mat = cm.getMat();
         int cow = mat.length;
         int col = mat[0].length;
         for (int i = 0; i < cow; i++) {
@@ -76,46 +89,63 @@ public class App
         return true;
     }
 
-    public static int[][] transform(int[][] m){
-        int[][] ns = new int[3][3];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                int temp = countLifedNum(m, i, j);
+    public static CellMat transform(CellMat cm){
+        int[][] mat = cm.getMat();
+        int height = cm.getHeight();
+        int width = cm.getWidth();
+
+        int[][] ns = new int[height][width];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                int temp = countLifedNum(cm, i, j);
 //                System.out.println("-----" + temp);
-                if(m[i][j] == 0){
+                if(mat[i][j] == 0){
                     if(temp == 3)
                         ns[i][j] = 1;
                 }else{
                     if(temp < 2 || temp >3)
                         ns[i][j] = 0;
+                    else
+                        ns[i][j] = 1;
                 }
             }
         }
-        return ns;
+        CellMat newMat = new CellMat(height, width, ns);
+
+        return newMat;
     }
 
     public static void main( String[] args )
     {
-        int[][] mat = {
-                {1, 0, 1},
-                {1, 0, 0},
-                {0, 0, 1}
+        int height = 4, width = 4;
+        int[][] mat1 = {
+                {0, 0, 0, 0},
+                {0, 1, 1, 1},
+                {1, 1, 1, 0},
+                {0, 0, 0, 0}
         };
+        int[][] mat = {
+                {0, 1, 1, 0},
+                {1, 0, 0, 1},
+                {0, 1, 1, 0}
+        };
+
+        CellMat cmJZ = new CellMat(3, 4, mat);
+        CellMat cmZD = new CellMat(4, 4, mat1);
 
 
         while(true){
-            draw(mat);
-            mat = transform(mat);
-//            Utils.printMat(mat);
-//            Utils.printMat(mat);
+            draw(cmJZ);
+            cmJZ = transform(cmJZ);
             System.out.println("====================");
-            //判断
-            if(judgeStop(mat))
-                break;
-        }
-        int a = countLifedNum(mat, 1,1);
-        System.out.println(a);
 
+            //判断是否停止
+            if(judgeStop(cmJZ))
+            {
+                System.out.println("cells are all dead");
+                break;
+            }
+        }
 
     }
 }
