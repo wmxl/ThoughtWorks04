@@ -4,6 +4,11 @@ import ThoughtWorks04.model.CellMat;
 import ThoughtWorks04.util.Utils;
 import javafx.scene.control.Cell;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Scanner;
+
 /**
  * Hello world!
  *
@@ -117,7 +122,18 @@ public class App
 
     public static void main( String[] args )
     {
-        int height = 4, width = 4;
+
+        Scanner sc = new Scanner(System.in);
+        int height = 0;
+        int width = 0;
+        System.out.println("请输入高（3到100的数字）:");
+        height = sc.nextInt();
+        System.out.println("请输入宽（3到100的数字）:");
+        width = sc.nextInt();
+        System.out.println("请输入矩阵（0代表死，1代表活）:");
+        int[][] mat = new int[][];
+        for()
+       // int height = 4, width = 4;
         int[][] mat1 = {
                 {0, 0, 0, 0},
                 {0, 1, 1, 1},
