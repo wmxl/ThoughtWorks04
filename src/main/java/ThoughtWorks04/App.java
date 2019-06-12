@@ -48,19 +48,21 @@ public class App
         return num;
     }
 
-    public static void  transform(){
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                System.out.print(countLifedNum(i, j)+ " ");
-            }
-            System.out.println();
-        }
+    public static int[][] transform(int[][] m){
+//        for (int i = 0; i < 3; i++) {
+//            for (int j = 0; j < 3; j++) {
+//                System.out.print(countLifedNum(i, j)+ " ");
+//            }
+//            System.out.println();
+//        }
+        return m;
     }
+
 
     public static void main( String[] args )
     {
 
-        transform();
+//        transform();
 
     }
 }
