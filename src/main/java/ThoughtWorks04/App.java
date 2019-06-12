@@ -12,6 +12,7 @@ public class App
             {1, 0, 1},
             {1, 0, 1}
     };
+    static int[][] ns = new int[3][3];
 
     public static boolean judge(int x, int y){
         if(x >= 0 && x <= 2 && y >= 0 && y <= 2)
@@ -49,13 +50,26 @@ public class App
     }
 
     public static int[][] transform(int[][] m){
-//        for (int i = 0; i < 3; i++) {
-//            for (int j = 0; j < 3; j++) {
-//                System.out.print(countLifedNum(i, j)+ " ");
-//            }
-//            System.out.println();
-//        }
-        return m;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                int temp = countLifedNum(i,j);
+                if(m[i][j] == 0){
+                    if(temp == 3)
+                        ns[i][j] = 1;
+                    else
+                        ns[i][j] = 0;
+                }else{
+                    if(temp < 2)
+                        ns[i][j] = 0;
+                    else if(temp <= 3)
+                        ns[i][j] = 1;
+                    else
+                        ns[i][j] = 0;
+                }
+            }
+        }
+
+        return ns;
     }
 
 
