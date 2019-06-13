@@ -23,13 +23,14 @@ public class LifeGameFrame extends JFrame {
     private JButton setHeightBtn = new JButton("Input Height");
     private JTextField setHeightField = new JTextField();
 
+    private JPanel gridPanel;
 
     private boolean isStart = false;
     private boolean stop = false;
 
     private CellMat cellMat;
-    private JPanel buttonPanel = new JPanel(new GridLayout(4 ,2,10, 5));
-    private JPanel gridPanel = new JPanel();
+    private JPanel buttonPanel = new JPanel(new GridLayout(4, 2, 10, 5));
+//    private JPanel gridPanel = new JPanel();
 
     private JButton[][] btnMat;
 
@@ -66,7 +67,7 @@ public class LifeGameFrame extends JFrame {
         getContentPane().add("North", buttonPanel);
 
         this.setSize(800, 800);
-        this.setLocation(500,100);
+        this.setLocation(500, 100);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -74,10 +75,12 @@ public class LifeGameFrame extends JFrame {
 
     private class RestartActioner implements ActionListener {
 
+
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Restart");
-
+//            new LifeGameFrame();
+//            removeAll();
             //获取时间, 宽，高
             try {
                 duration = Integer.parseInt(durationTextField.getText().trim());
@@ -108,12 +111,12 @@ public class LifeGameFrame extends JFrame {
             btnMat = new JButton[rows][cols];
             for (int y = 0; y < rows; y++) {
                 for (int x = 0; x < cols; x++) {
-                    btnMat[y][x] = new JButton();;
+                    btnMat[y][x] = new JButton();
                     gridPanel.add(btnMat[y][x]);
                 }
             }
-            add("Center", gridPanel);
 
+            add("Center", gridPanel);
             draw();
 
             for (int y = 0; y < btnMat.length; y++) {
@@ -124,24 +127,23 @@ public class LifeGameFrame extends JFrame {
                             draw();
                             gridPanel.updateUI();
                         }
+
                         public void mousePressed(MouseEvent e) {
                             System.out.println("点击了方块");
-                            JButton temp = (JButton)e.getSource();
+                            JButton temp = (JButton) e.getSource();
 
-                            if(temp.getBackground() != Color.BLACK)
-                            {
+                            if (temp.getBackground() != Color.BLACK) {
                                 System.out.println("涂黑");
                                 temp.setBackground(Color.BLACK);
-                            }
-                            else
+                            } else
                                 temp.setBackground(Color.WHITE);
 
                             //更新数字矩阵
                             for (int i = 0; i < btnMat.length; i++) {
                                 for (int j = 0; j < btnMat[0].length; j++) {
-                                    if(temp.getX() == btnMat[i][j].getX() && temp.getY() == btnMat[i][j].getY()){
+                                    if (temp.getX() == btnMat[i][j].getX() && temp.getY() == btnMat[i][j].getY()) {
                                         System.out.println("更新");
-                                        if(cellMat.getMat()[i][j] == 0)
+                                        if (cellMat.getMat()[i][j] == 0)
                                             cellMat.getMat()[i][j] = 1;
                                         else
                                             cellMat.getMat()[i][j] = 0;
@@ -155,14 +157,17 @@ public class LifeGameFrame extends JFrame {
                             System.out.println("当前数字矩阵：");
                             cellMat.printMat();
                         }
+
                         public void mouseExited(MouseEvent e) {
                             draw();
                             gridPanel.updateUI();
                         }
+
                         public void mouseEntered(MouseEvent e) {
                             draw();
                             gridPanel.updateUI();
                         }
+
                         public void mouseClicked(MouseEvent e) {
                             draw();
                             gridPanel.updateUI();
@@ -189,30 +194,13 @@ public class LifeGameFrame extends JFrame {
         }
     }
 
-    /**
-     * 创建显示的gridlayout布局
-     */
-    private void initGridLayout() {
-        int rows = cellMat.getHeight();
-        int cols = cellMat.getWidth();
-        gridPanel = new JPanel();
-        gridPanel.setLayout(new GridLayout(rows, cols));
-        btnMat = new JButton[rows][cols];
-        for (int y = 0; y < rows; y++) {
-            for (int x = 0; x < cols; x++) {
-                btnMat[y][x] = new JButton();;
-                gridPanel.add(btnMat[y][x]);
-            }
-        }
-        add("Center", gridPanel);
-    }
-
     private class StartGameActioner implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("点击了开始");
-            System.out.println("isStart = " + isStart);;
+            System.out.println("isStart = " + isStart);
+            ;
 
             if (!isStart) {
 
@@ -225,6 +213,7 @@ public class LifeGameFrame extends JFrame {
                 }
 
                 new Thread(new GameControlTask()).start();
+
                 isStart = true;
                 stop = false;
                 startGameBtn.setText("Pause");
@@ -240,6 +229,7 @@ public class LifeGameFrame extends JFrame {
         @Override
         public void run() {
             System.out.println("线程启动。。。");
+
             while (!stop) {
                 cellMat.transform();
                 System.out.println("draw。。。");
@@ -258,6 +248,7 @@ public class LifeGameFrame extends JFrame {
 
     /**
      * Ui测试main方法
+     *
      * @param args
      */
     public static void main(String[] args) {
