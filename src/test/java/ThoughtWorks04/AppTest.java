@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import ThoughtWorks04.model.CellMat;
 import ThoughtWorks04.util.Utils;
 import org.junit.Test;
 
@@ -38,17 +39,20 @@ public class AppTest
     {;
         assertTrue( true );
     }
-//    @Test
+    @Test
     public void testCountLifedNum(){
+        CellMat cm = new CellMat(3,3, mat);
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-               // assertThat(lifeNum[i][j], is(App.countLifedNum(mat, i, j)));
+                assertThat(lifeNum[i][j], is(cm.countLifedNum(i, j)));
             }
         }
     }
     @Test
     public void testNextStatus(){
-//        Utils.printMat(App.ns);
-    //    assertThat(ns, is(App.transform(mat)));
+
+        CellMat cm = new CellMat(3,3, mat);
+        cm.transform();
+        assertThat(ns, is(cm.getMat()));
     }
 }

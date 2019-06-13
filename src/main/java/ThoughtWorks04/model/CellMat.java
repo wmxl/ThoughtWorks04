@@ -63,11 +63,11 @@ public class CellMat {
      * @param i 纵坐标
      * @return
      */
-    public static int countLifedNum(CellMat cm, int i, int j){
+    public int countLifedNum(int i, int j){
         int num=0;
-        int mat[][] = cm.getMat();
-        int height = cm.getHeight();
-        int width = cm.getWidth();
+        int mat[][] = this.getMat();
+        int height = this.getHeight();
+        int width = this.getWidth();
 
         if(judge(i-1, j-1, height, width))
             num += mat[i-1][j-1];
@@ -100,7 +100,7 @@ public class CellMat {
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                int temp = countLifedNum(this, i, j);
+                int temp = countLifedNum(i, j);
 //                System.out.println("-----" + temp);
                 if(mat[i][j] == 0){
                     if(temp == 3)

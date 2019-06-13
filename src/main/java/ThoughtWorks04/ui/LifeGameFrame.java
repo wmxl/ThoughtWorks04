@@ -16,14 +16,14 @@ public class LifeGameFrame extends JFrame {
 
     private JButton generateBtn = new JButton("Generate");
     private JButton startGameBtn = new JButton("Start Game");
-    private JButton durationPromtLabel = new JButton("Speed(1~1000,   1 mean fastest)");
+    private JButton durationBtn = new JButton("Speed(1~1000,   1 mean fastest)");
     private JTextField durationTextField = new JTextField("150");
     private JButton setWidthBtn = new JButton("Input Width");
     private JTextField setWidthField = new JTextField();
     private JButton setHeightBtn = new JButton("Input Height");
     private JTextField setHeightField = new JTextField();
-    private JButton openFile = new JButton("choose file");
-    private JButton Restart = new JButton("RESTART!");
+    private JButton openFileBtn = new JButton("choose file");
+    private JButton RestartBtn = new JButton("RESTART!");
 
     private CellMat cellMat;
     private JPanel buttonPanel = new JPanel(new GridLayout(5 ,2,10, 5));
@@ -39,22 +39,19 @@ public class LifeGameFrame extends JFrame {
         setTitle("LifeGame");
         generateBtn.addActionListener(new GenerateActioner());
         startGameBtn.addActionListener(new StartGameActioner());
-        Restart.addActionListener(new RestartActioner());
+        RestartBtn.addActionListener(new RestartActioner());
+        openFileBtn.addActionListener(new OpenFileActioner());
 
-        openFile.addActionListener(new OpenFileActioner());
-
-
-        buttonPanel.add(generateBtn, 0);
-        buttonPanel.add(startGameBtn, 1);
-        buttonPanel.add(durationPromtLabel, 2);
-        buttonPanel.add(durationTextField, 3);
-
+        buttonPanel.add(generateBtn);
+        buttonPanel.add(startGameBtn);
+        buttonPanel.add(durationBtn);
+        buttonPanel.add(durationTextField);
         buttonPanel.add(setWidthBtn);
         buttonPanel.add(setWidthField);
         buttonPanel.add(setHeightBtn);
         buttonPanel.add(setHeightField);
-        buttonPanel.add(openFile);
-        buttonPanel.add(Restart);
+        buttonPanel.add(openFileBtn);
+        buttonPanel.add(RestartBtn);
         buttonPanel.setBackground(Color.WHITE);
 
         getContentPane().add("North", buttonPanel);
@@ -64,6 +61,55 @@ public class LifeGameFrame extends JFrame {
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+
+    private void draw() {
+        int[][] matrix = cellMat.getMat();
+
+        for (int y = 0; y < matrix.length; y++) {
+            for (int x = 0; x < matrix[0].length; x++) {
+                if (matrix[y][x] == 1) {
+                    btnMat[y][x].setBackground(Color.BLACK);
+                } else {
+                    btnMat[y][x].setBackground(Color.WHITE);
+                }
+            }
+        }
+    }
+
+    private void initGridLayout() {
+        int rows = cellMat.getHeight();
+        int cols = cellMat.getWidth();
+        gridPanel = new JPanel();
+        gridPanel.setLayout(new GridLayout(rows, cols));
+        btnMat = new JButton[rows][cols];
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < cols; x++) {
+                btnMat[y][x] = new JButton();;
+                gridPanel.add(btnMat[y][x]);
+            }
+        }
+        add("Center", gridPanel);
+    }
+
+    private class GameControlTask implements Runnable {
+        @Override
+        public void run() {
+            System.out.println("线程启动...");
+            while (!stop) {
+                cellMat.transform();
+                draw();
+                gridPanel.updateUI();
+                try {
+                    TimeUnit.MILLISECONDS.sleep(duration);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    //监听事件部分
+
     private class RestartActioner implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -177,36 +223,6 @@ public class LifeGameFrame extends JFrame {
         }
     }
 
-    private void draw() {
-
-        int[][] matrix = cellMat.getMat();
-
-        for (int y = 0; y < matrix.length; y++) {
-            for (int x = 0; x < matrix[0].length; x++) {
-                if (matrix[y][x] == 1) {
-                    btnMat[y][x].setBackground(Color.BLACK);
-                } else {
-                    btnMat[y][x].setBackground(Color.WHITE);
-                }
-            }
-        }
-    }
-
-    private void initGridLayout() {
-        int rows = cellMat.getHeight();
-        int cols = cellMat.getWidth();
-        gridPanel = new JPanel();
-        gridPanel.setLayout(new GridLayout(rows, cols));
-        btnMat = new JButton[rows][cols];
-        for (int y = 0; y < rows; y++) {
-            for (int x = 0; x < cols; x++) {
-                btnMat[y][x] = new JButton();;
-                gridPanel.add(btnMat[y][x]);
-            }
-        }
-        add("Center", gridPanel);
-    }
-
     private class StartGameActioner implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -226,23 +242,6 @@ public class LifeGameFrame extends JFrame {
                 isStart = false;
 
                 startGameBtn.setText("Start");
-            }
-        }
-    }
-
-    private class GameControlTask implements Runnable {
-        @Override
-        public void run() {
-            System.out.println("线程启动...");
-            while (!stop) {
-                cellMat.transform();
-                draw();
-                gridPanel.updateUI();
-                try {
-                    TimeUnit.MILLISECONDS.sleep(duration);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
             }
         }
     }
