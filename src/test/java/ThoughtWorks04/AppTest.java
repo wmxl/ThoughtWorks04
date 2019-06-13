@@ -39,6 +39,19 @@ public class AppTest
     {;
         assertTrue( true );
     }
+
+    @Test
+    public void testJudge(){
+        CellMat cm = new CellMat(3,3, mat);
+        int height = 10, width = 10;
+        assertThat(true, is(cm.judge(3, 5, height, width)));
+        assertThat(true, is(cm.judge(0, 0, height, width)));
+        assertThat(false, is(cm.judge(11, 11, height, width)));
+        assertThat(false, is(cm.judge(11, -1, height, width)));
+        assertThat(false, is(cm.judge(23, 11, height, width)));
+
+
+    }
     @Test
     public void testCountLifedNum(){
         CellMat cm = new CellMat(3,3, mat);
@@ -49,7 +62,7 @@ public class AppTest
         }
     }
     @Test
-    public void testNextStatus(){
+    public void testTransform(){
 
         CellMat cm = new CellMat(3,3, mat);
         cm.transform();
