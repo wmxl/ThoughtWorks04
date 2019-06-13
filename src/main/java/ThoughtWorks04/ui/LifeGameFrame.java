@@ -14,40 +14,26 @@ import java.util.concurrent.TimeUnit;
 
 public class LifeGameFrame extends JFrame {
 
-
     private JButton generateBtn = new JButton("Generate");
     private JButton startGameBtn = new JButton("Start Game");
     private JButton durationPromtLabel = new JButton("Speed(1~1000,   1 mean fastest)");
-    private JTextField durationTextField = new JTextField("300");
-
+    private JTextField durationTextField = new JTextField("150");
     private JButton setWidthBtn = new JButton("Input Width");
     private JTextField setWidthField = new JTextField();
     private JButton setHeightBtn = new JButton("Input Height");
     private JTextField setHeightField = new JTextField();
-
     private JButton openFile = new JButton("choose file");
     private JButton Restart = new JButton("RESTART!");
-
-    private boolean isStart = false;
-    private boolean stop = false;
 
     private CellMat cellMat;
     private JPanel buttonPanel = new JPanel(new GridLayout(5 ,2,10, 5));
     private JPanel gridPanel = new JPanel();
-
     private JButton[][] btnMat;
 
-
-    /**
-     * 速度，（实际上是间隔，越大越慢）
-     */
-    private static final int DEFAULT_DURATION = 200;
-
-    //动画间隔
+    private boolean isStart = false;
+    private boolean stop = false;
+    private static final int DEFAULT_DURATION = 150;
     private int duration = DEFAULT_DURATION;
-
-    private int width = 4;
-    private int height = 4;
 
     public LifeGameFrame() {
         setTitle("LifeGame");
@@ -97,13 +83,8 @@ public class LifeGameFrame extends JFrame {
                 stop = true;
                 startGameBtn.setText("Start Game");
 
-                //    int matrix0[][] = new int[height][width];
-                //  cellMat = new CellMat(height, width, matrix0);
-
                 String filepath = fileChooser.getSelectedFile().getPath();
                 cellMat = Utils.readFileMatrix(filepath);
-//                int heigt = cellMat.getHeight();
-//                int wight = cellMat.getWidth();
                 initGridLayout();
                 draw();
                 gridPanel.updateUI();
@@ -115,19 +96,14 @@ public class LifeGameFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Restart");
-
-            //获取时间, 宽，高
+            int width, height;
             try {
                 duration = Integer.parseInt(durationTextField.getText().trim());
                 width = Integer.parseInt(setWidthField.getText().trim());
                 height = Integer.parseInt(setHeightField.getText().trim());
-                System.out.println("width = " + width);
-                System.out.println("height = " + height);
+
             } catch (NumberFormatException e1) {
                 duration = DEFAULT_DURATION;
-
-                System.out.println("异常");
                 JOptionPane.showConfirmDialog(null, "请输入高和宽", "未输入高或宽", JOptionPane.CLOSED_OPTION);
                 return;
             }
@@ -137,9 +113,7 @@ public class LifeGameFrame extends JFrame {
             startGameBtn.setText("Start");
 
             int matrix0[][] = new int[height][width];
-
             cellMat = new CellMat(height, width, matrix0);
-
             int rows = cellMat.getHeight();
             int cols = cellMat.getWidth();
             gridPanel = new JPanel();
@@ -152,31 +126,22 @@ public class LifeGameFrame extends JFrame {
                 }
             }
             add("Center", gridPanel);
-
             draw();
-
             for (int y = 0; y < btnMat.length; y++) {
                 for (int x = 0; x < btnMat[0].length; x++) {
-                    //对每个矩阵按钮绑定监听
                     btnMat[y][x].addMouseListener(new MouseListener() {
-
                         public void mouseReleased(MouseEvent e) {
                             draw();
                             gridPanel.updateUI();
                         }
                         public void mousePressed(MouseEvent e) {
-                            System.out.println("点击了方块");
                             JButton temp = (JButton)e.getSource();
 
                             if(temp.getBackground() != Color.BLACK)
-                            {
-                                System.out.println("涂黑");
                                 temp.setBackground(Color.BLACK);
-                            }
                             else
                                 temp.setBackground(Color.WHITE);
 
-                            //更新数字矩阵
                             for (int i = 0; i < btnMat.length; i++) {
                                 for (int j = 0; j < btnMat[0].length; j++) {
                                     if(temp.getX() == btnMat[i][j].getX() && temp.getY() == btnMat[i][j].getY()){
@@ -188,10 +153,8 @@ public class LifeGameFrame extends JFrame {
                                     }
                                 }
                             }
-
                             draw();
                             gridPanel.updateUI();
-
                             System.out.println("当前数字矩阵：");
                             cellMat.printMat();
                         }
@@ -229,9 +192,6 @@ public class LifeGameFrame extends JFrame {
         }
     }
 
-    /**
-     * 创建显示的gridlayout布局
-     */
     private void initGridLayout() {
         int rows = cellMat.getHeight();
         int cols = cellMat.getWidth();
@@ -248,20 +208,13 @@ public class LifeGameFrame extends JFrame {
     }
 
     private class StartGameActioner implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("点击了开始");
-            System.out.println("isStart = " + isStart);;
-
             if (!isStart) {
-
-                //获取时间, 宽，高
                 try {
                     duration = Integer.parseInt(durationTextField.getText().trim());
                 } catch (NumberFormatException e1) {
                     duration = DEFAULT_DURATION;
-                    System.out.println("异常");
                 }
 
                 new Thread(new GameControlTask()).start();
@@ -280,14 +233,11 @@ public class LifeGameFrame extends JFrame {
     private class GameControlTask implements Runnable {
         @Override
         public void run() {
-            System.out.println("线程启动。。。");
+            System.out.println("线程启动...");
             while (!stop) {
                 cellMat.transform();
-                System.out.println("draw。。。");
-                cellMat.printMat();
                 draw();
                 gridPanel.updateUI();
-
                 try {
                     TimeUnit.MILLISECONDS.sleep(duration);
                 } catch (InterruptedException ex) {
@@ -295,13 +245,5 @@ public class LifeGameFrame extends JFrame {
                 }
             }
         }
-    }
-
-    /**
-     * Ui测试main方法
-     * @param args
-     */
-    public static void main(String[] args) {
-        new LifeGameFrame();
     }
 }

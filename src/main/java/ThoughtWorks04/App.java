@@ -1,6 +1,7 @@
 package ThoughtWorks04;
 
 import ThoughtWorks04.model.CellMat;
+import ThoughtWorks04.ui.LifeGameFrame;
 import ThoughtWorks04.util.Utils;
 import javafx.scene.control.Cell;
 
@@ -51,8 +52,7 @@ public class App
         return true;
     }
 
-    public static void main( String[] args )
-    {
+     public static void consoleVersion(){
         int[][] mat1 = {
                 {0, 0, 0, 0},
                 {0, 1, 1, 1},
@@ -80,5 +80,10 @@ public class App
                 break;
             }
         }
+    }
+
+    public static void main( String[] args )
+    {
+        new LifeGameFrame();
     }
 }
